@@ -7,6 +7,7 @@ Gradle android 平台组件化gradle插件
     
 
 ## 使用方法
+ 以下配置gradle 版本在4.0以上
 ### 1.依赖引入
  在工程根目录的build.gradle中添加classpath
  
