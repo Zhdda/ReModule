@@ -96,3 +96,13 @@ Gradle android 平台组件化gradle插件
  在组件工程中项目结构如下
  
  ![](art/WX20171222-114936@2x.png)
+ 
+ 在 src/main 目录下 除了debug 下的东西都会打到aar包中，而debug包中
+ 可以放单独运行时需要用到的类和资源
+ 
+ ### 3.同步一下
+   此时就可以每个module 可以单独跑起来，当他需要达成arr上传私有maven的时候，
+   配置一下maven相关配置，即可上传，
+   
+   注：aar包中的manifest.xml 会取出application节点所有属性，及activity中带有
+    启动的intentfilter 以便于合并到主工程的时候不会覆盖主工程application 而且不会产生多个app入口
