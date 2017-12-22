@@ -1,3 +1,22 @@
+buildscript {
+
+    repositories {
+        google()
+        jcenter()
+//        maven {
+//            url uri('./repo')
+//        }
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:3.0.1'
+        classpath 'com.novoda:bintray-release:0.5.0'
+
+        // NOTE: Do not place your application dependencies here; they belong
+        // in the individual module build.gradle files
+    }
+}
+
+apply plugin: 'com.novoda.bintray-release'//添加
 apply plugin: 'groovy'
 dependencies {
     //gradle sdk
@@ -8,4 +27,13 @@ dependencies {
 
 repositories {
     mavenCentral()
+}
+
+publish {
+    userOrg = 'devzhangzhe'
+    groupId = 'com.zhangzhe.module'
+    artifactId = 'moduleHelper'//项目名称
+    publishVersion = '0.0.2'//版本号
+    desc = 'Android Module Helper Plugin'
+    website = 'https://github.com/DevWilliamZhang/ReModule'
 }
