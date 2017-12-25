@@ -33,7 +33,7 @@ publish {
     userOrg = 'devzhangzhe'
     groupId = 'com.zhangzhe.module'
     artifactId = 'moduleHelper'//项目名称
-    publishVersion = '0.0.2'//版本号
+    publishVersion = '0.0.7'//版本号
     desc = 'Android Module Helper Plugin'
     website = 'https://github.com/DevWilliamZhang/ReModule'
 }

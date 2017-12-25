@@ -45,6 +45,7 @@ class ReModulePlugin implements Plugin<Project> {
 
         System.out.println("isRunAlone  is " + isRunAlone)
 
+
         //根据配置添加各种组件依赖，并且自动化生成组件加载代码
         if (isRunAlone) {
             project.apply plugin: 'com.android.application'
@@ -64,6 +65,8 @@ class ReModulePlugin implements Plugin<Project> {
 //                project.android.registerTransform(new ComCodeTransform(project))
             }
         } else {
+            copyManifest(project)
+
             project.apply plugin: 'com.android.library'
             System.out.println("apply plugin is " + 'com.android.library')
             if (!module.equals(mainmodulename)) {
@@ -74,27 +77,35 @@ class ReModulePlugin implements Plugin<Project> {
                         res.srcDirs = ['src/main/res']
                     }
                 }
-                project.android
             }
 
             project.afterEvaluate {
-                File infile = project.file("src/main/AndroidManifest.xml")
-                File outfile = project.file("build/manifest")
-                project.copy {
-                    from infile
-                    into outfile
+                try {
+                    updateManifestXml("build/manifest/AndroidManifest.xml")
                 }
-                updateManifestXml("build/manifest/AndroidManifest.xml")
+                catch (Exception e){
 
-                System.out.println("$module-release.aar copy success ")
+                }
 
             }
-
-
         }
 
     }
+    void copyManifest(Project project){
 
+        File infile = project.file("src/main/AndroidManifest.xml")
+        File outfile = project.file("build/manifest/")
+        if (!outfile.exists()){
+            outfile.mkdir()
+        }
+        project.copy {
+            from infile
+            into outfile
+        }
+
+        System.out.println("-release.aar copy success ")
+
+    }
     /**
      * 根据当前的task，获取要运行的组件，规则如下：
      * assembleRelease ---app
@@ -157,13 +168,14 @@ class ReModulePlugin implements Plugin<Project> {
      * @param path
      */
     void updateManifestXml(def path) {
+
         File file = new File(path)
 
         def doc = DOMBuilder.parse(new StringReader(file.text))
         def root = doc.documentElement
         use(groovy.xml.dom.DOMCategory) {
             //移除掉默认启动intent-filter 以及 基地标志的intent-filter
-            removeIntentFilterByAction_Categroy(root, "android.intent.action.MAIN", "android.intent.category.LAUNCHER")
+            removeIntentLAUNCHERAcitivity(root)
             //清除application 节点的各种属性避免作为。arr merge manifest时候 属性覆盖主工程application
             clearApplication(root)
 
@@ -224,4 +236,26 @@ class ReModulePlugin implements Plugin<Project> {
             }
         }
     }
+
+
+    void removeIntentLAUNCHERAcitivity(def root) {
+        root.getElementsByTagName("intent-filter").each { node ->
+            boolean hasMain
+            boolean hasLuancher
+            node.childNodes.each { childNode ->
+                if (childNode.nodeName == "action" && "android.intent.action.MAIN" == childNode.attributes.getNamedItem("android:name").nodeValue) {
+                    hasMain = true
+                }
+                if (childNode.nodeName == "category" && "android.intent.category.LAUNCHER" == childNode.attributes.getNamedItem("android:name").nodeValue) {
+                    hasLuancher = true
+                }
+            }
+            if (hasMain && hasLuancher) {
+               def parent = node.parentNode
+                parent.parentNode.removeChild(parent)
+            }
+        }
+    }
+
+
 }
