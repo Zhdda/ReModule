@@ -22,7 +22,7 @@ Gradle android 平台组件化gradle插件
         dependencies {
             classpath 'com.android.tools.build:gradle:3.0.1'
             classpath 'com.novoda:bintray-release:0.5.0'
-            classpath 'com.zhangzhe.module:moduleHelper:0.0.2'//加入此行
+            classpath 'com.zhangzhe.module:moduleHelper:0.0.7'//加入此行
         }
     }
     
